@@ -90,6 +90,6 @@ Or open directly in Google Colab — upload `CFPB.csv` to `/content/` before run
 
 ## Files
 
-- `cfpb.ipynb` — full analysis notebook
+- `cfpb_nlp_.ipynb` — full analysis notebook
 - `requirements.txt` — dependencies
 - `plots/` — generated visualizations
