@@ -1,9 +1,10 @@
-pandas
-numpy
-matplotlib
-scikit-learn
-nltk
-wordcloud
-gensim
-transformers
-spacy
+   gensim
+   transformers
+   spacy
+   scikit-learn
+   nltk
+   gdown
+   pandas
+   numpy
+   matplotlib
+   seaborn
