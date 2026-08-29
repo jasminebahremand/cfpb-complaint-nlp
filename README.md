@@ -1,95 +1,66 @@
 # What Do 383,000 Financial Complaints Reveal?
 **LDA Topic Modeling · Logistic Regression · Word2Vec · NLP Pipeline · 383,564 Narratives**
-
 ---
-
 ## Overview
-
 Banks, credit bureaus, and lenders receive millions of consumer complaints every year — but the richest signal is buried in free-text narratives that structured data alone cannot capture. This project applied an end-to-end NLP pipeline to the CFPB public complaint database to surface systemic patterns, predict which companies will fail to respond on time, and identify what people are actually complaining about.
 
-Built a full pipeline from raw text to topic modeling, sentiment analysis, predictive classification, and advanced NLP (Word2Vec, zero-shot classification, abstractive summarization).
-
 > Full write-up: https://jasminebahremand.my.canva.site/
-
 ---
-
 ## Key Findings
-
-- **Complaint text predicts untimely responses at 79% accuracy (ROC-AUC: 0.79)** — catching 66% of at-risk cases before a deadline passes
+- **Complaint text predicts untimely responses at ROC-AUC 0.76** (time-ordered split) — catching 63% of at-risk cases before a deadline passes
 - **The predictive signal is entity-driven, not emotional** — which company is named matters more than how angry the complaint sounds
-- **Customer service failure was the dominant zero-shot complaint label** — most grievances are process breakdowns, not product failures
-- **Equifax, TransUnion, and Bank of America** appeared most frequently across 383,564 narratives, pointing to where systemic issues concentrate
-- **LDA identified 8 distinct complaint themes** mapping cleanly onto product categories — Payment & Billing dominated the corpus
-
+- **Customer service failure was the top zero-shot label** — most grievances are process breakdowns, not product failures
+- **Equifax, Chase, and Bank of America** appeared most frequently across 383,564 narratives, pointing to where systemic issues concentrate
+- **LDA identified 8 distinct complaint themes** — credit reporting and debt collection dominated the corpus
 ---
-
 ## Key Visuals
-
 ### Complaint Vocabulary Across 383,564 Narratives
-![Word Cloud](plots/wordcloud_all.png)
-The most frequent terms reflect credit reporting, debt collection, and mortgage complaints — vocabulary is highly product-specific, enabling automated complaint routing.
+![Word Cloud](plots/wordcloud.png)
+Terms reflect credit reporting, debt collection, and mortgage complaints — vocabulary is highly product-specific, enabling automated complaint routing.
 
 ### Model Comparison: Timely Response Classifier
-![ROC Curve](plots/roc_curve.png)
-Logistic Regression (AUC=0.79) outperforms Naive Bayes (AUC=0.78) — and more importantly, captures 66% of untimely cases vs 10% for NB, the metric that matters for flagging at-risk complaints.
+![ROC Curve](plots/roc_classifiers.png)
+Logistic Regression (AUC 0.76) captures 63% of untimely cases vs 7% for Naive Bayes — the metric that matters for flagging at-risk complaints.
 
 ### Complaint Distribution Across 8 LDA Topics
-![LDA Topics](plots/lda_topics.png)
-Payment & Billing dominates the corpus. Topic modeling surfaces the thematic structure of complaints without any labeled training data.
+![LDA Topics](plots/topic_distribution.png)
+Credit reporting and debt collection dominate — topic modeling surfaces thematic structure without any labeled training data.
 
-### Words Predicting Timely vs Untimely Response
-![Feature Importance](plots/feature_importance.png)
-Top predictive features are company names — confirming the signal is about who is being complained about, not what is being said.
-
+### Semantic Similarity Between Categories (Word2Vec)
+![Category Similarity](plots/category_similarity.png)
+Credit reporting and debt collection sit close in embedding space while mortgage stands apart — confirming the themes are semantically real.
 ---
-
 ## Methods
-
 - Text preprocessing with custom stopword removal and XXXX redaction handling
-- Word frequency, Zipf's Law validation, TF-IDF by product category
-- N-gram analysis (bigrams and trigrams)
+- Word frequency, Zipf's Law validation, TF-IDF by product category, n-grams
 - LDA Topic Modeling (8 topics, 30K sample)
 - VADER Sentiment Analysis by product, state, and timely response
-- Binary classification — Logistic Regression (class_weight=balanced) vs Naive Bayes (undersampled, 10:1 ratio)
-- Word2Vec embeddings (23,375 word vocabulary) with t-SNE visualization
-- Zero-shot classification via BART-MNLI (facebook/bart-large-mnli)
-- Abstractive summarization via BART-CNN (facebook/bart-large-cnn)
-- spaCy NER and POS tagging across 2,000 complaint sample
-
+- Binary classification — Logistic Regression (class_weight=balanced) vs Naive Bayes (undersampled 10:1), TF-IDF features, time-ordered split
+- Word2Vec embeddings (30K-word vocabulary) with cosine similarity + t-SNE
+- Zero-shot classification via BART-MNLI; abstractive summarization via BART-CNN
+- spaCy NER and POS tagging (2,000-complaint sample)
 ---
-
 ## Tech Stack
-
 Python · Pandas · Scikit-learn · NLTK · spaCy · Gensim · Transformers · WordCloud · Matplotlib · Seaborn
-
 ---
-
 ## How to Run
+Open `cfpb_nlp_.ipynb` in Google Colab and **Run All** — the notebook downloads the dataset automatically from a public link, so no manual upload is needed.
 
+Locally:
 ```bash
 pip install -r requirements.txt
-jupyter notebook cfpb.ipynb
+jupyter notebook cfpb_nlp_.ipynb
 ```
-
-Or open directly in Google Colab — upload `CFPB.csv` to `/content/` before running.
-
 ---
-
 ## Data
-
-**CFPB Consumer Complaint Database (2015–2019):** https://www.kaggle.com/datasets/selener/consumer-complaint-database
-
+**CFPB Consumer Complaint Database (2015–2019)** — public. Source: https://www.kaggle.com/datasets/selener/consumer-complaint-database
 - 383,564 complaint narratives with text
-- 18 financial product types
-- 4,121 unique companies
-- 97/3 timely vs untimely response split
+- 18 financial product types · 4,121 unique companies
+- 97 / 3 timely vs untimely response split
 
-> Dataset not included in this repo due to size. Download from Kaggle and upload as `CFPB.csv`.
-
+> The notebook pulls a hosted copy automatically; no manual download needed to run it.
 ---
-
 ## Files
-
 - `cfpb_nlp_.ipynb` — full analysis notebook
 - `requirements.txt` — dependencies
 - `plots/` — generated visualizations
