@@ -19,6 +19,7 @@ Banks, credit bureaus, and lenders receive millions of consumer complaints every
 - **Customer service failure was the top zero-shot label** — most grievances are process breakdowns, not product failures
 - **Equifax, Chase, and Bank of America** appeared most frequently across 383,564 narratives, pointing to where systemic issues concentrate
 - **LDA identified 8 distinct, nameable complaint themes** — from credit bureau reporting errors and debt collection balance disputes to mortgage payment issues — with credit reporting and debt collection dominating the corpus
+- **Debt collection and banking complaints run angriest, credit card complaints run calmest** — sentiment (VADER) varies systematically by product, not just by individual complaint
 
 ---
 
@@ -29,10 +30,15 @@ Banks, credit bureaus, and lenders receive millions of consumer complaints every
 
 Terms reflect credit reporting, debt collection, and mortgage complaints — vocabulary is highly product-specific, enabling automated complaint routing.
 
+### Where Complaints Concentrate
+![Top Organizations Named](plots/top_organizations.png)
+
+Equifax, Chase, and Bank of America are named most often across all 383,564 narratives — a handful of companies account for a disproportionate share of complaint volume.
+
 ### Model Comparison: Timely Response Classifier
 ![ROC Curve](plots/roc_classifiers.png)
 
-Logistic Regression (AUC 0.76) captures 63% of untimely cases vs 7% for Naive Bayes — the metric that matters for flagging at-risk complaints.
+Naive Bayes edges out a marginally higher AUC (0.77 vs. 0.76), but Logistic Regression is the better real-world choice — at the deployment threshold it catches 63% of untimely responses vs. just 7% for Naive Bayes, whose undersampled training skews its probability scores.
 
 ### Complaint Distribution Across 8 LDA Topics
 ![LDA Topics](plots/topic_distribution.png)
@@ -43,6 +49,11 @@ Credit reporting and debt collection dominate — topic modeling surfaces themat
 ![Topic Distribution by Product](plots/topic_by_product.png)
 
 Each product complains about something different: credit reporting is dominated by bureau reporting errors, credit cards cluster around charge disputes, and debt collection spans legal/FDCPA disputes and balance disagreements — confirming the LDA themes map onto real, distinct complaint types rather than noise.
+
+### Which Products Complain Angriest?
+![Complaint Tone by Product](plots/sentiment_by_product.png)
+
+Debt collection and banking complaints skew most negative in tone, while credit card and credit reporting complaints run comparatively calm — sentiment tracks the product itself, not just the individual complaint.
 
 ### Semantic Similarity Between Categories (Word2Vec)
 ![Category Similarity](plots/category_similarity.png)
